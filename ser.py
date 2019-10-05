@@ -355,7 +355,7 @@ def category():
                         data = content
                     else:
                         logging.warning('<category> try to get a no exist category. request.form = %s' % request.form)
-                        data = {"error": "FailToGetIndex"}
+                        data = {"error": "FailToGetTheIndexOfPlaylists"}
             return json.dumps(data)
         except UidError:    # 发起用户不存在
             logging.critical('<category>: A NO EXISTING FROM-USER TRY TO category. request.form = %s' % request.form)
