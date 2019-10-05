@@ -8,7 +8,9 @@
 
 What behind this app is this simple but strong server. Being coded in only hundreds  of lines, it offers connections of different musharing users, with which they could attend a room, then chat freely as well as safely. This server NEVER records users' messages and everything about a account will be encrypted. Only the unexpected behaves will be logged (the account information will be encrypted, too) for debug.
 
-> **This repositories is the *Back-End Server for Musharing*, if you are seek the Android App of Musharing please [click here]()**.
+> **This repository is the *Back-End Server for Musharing*, if you are seek the Android App of Musharing please [click here](https://github.com/musharing-team/Musharing-Android)**.
+
+P.S. I am terribly sorry that, for convenience to deploy, I put the venv into the repository (actually, I have even not written a .gitignore), which is disgusting. Just be kind to forgive me, please. 🙏
 
 ## Deploy
 
