@@ -1,0 +1,71 @@
+{
+    "id": "1",
+    "name": "Life",
+    "music_list": [
+        {
+            "AlbumImageUrl": "http://cr0123.gz01.bdysite.com/file/Life/Life.png",
+            "album": "Life",
+            "artist": "BaSO4",
+            "duration": 0,
+            "fileUrl": "http://cr0123.gz01.bdysite.com/file/Life/Need%20For%20Relaxation.mp3",
+            "id": "BaSO4_Life_01",
+            "name": "Need For Relaxation"
+        },
+        {
+            "AlbumImageUrl": "http://cr0123.gz01.bdysite.com/file/Life/Life.png",
+            "album": "Life",
+            "artist": "BaSO4",
+            "duration": 0,
+            "fileUrl": "http://cr0123.gz01.bdysite.com/file/Life/命运之石.mp3",
+            "id": "BaSO4_Life_02",
+            "name": "命运之石"
+        },
+        {
+            "AlbumImageUrl": "http://cr0123.gz01.bdysite.com/file/Life/Life.png",
+            "album": "Life",
+            "artist": "BaSO4",
+            "duration": 0,
+            "fileUrl": "http://cr0123.gz01.bdysite.com/file/Life/四伏.m4a",
+            "id": "BaSO4_Life_03",
+            "name": "四伏"
+        },
+        {
+            "AlbumImageUrl": "http://cr0123.gz01.bdysite.com/file/Life/Life.png",
+            "album": "Life",
+            "artist": "BaSO4",
+            "duration": 0,
+            "fileUrl": "http://cr0123.gz01.bdysite.com/file/Life/随心所欲.m4a",
+            "id": "BaSO4_Life_04",
+            "name": "随心所欲"
+        },
+        {
+            "AlbumImageUrl": "http://cr0123.gz01.bdysite.com/file/Life/Life.png",
+            "album": "Life",
+            "artist": "BaSO4",
+            "duration": 0,
+            "fileUrl": "http://cr0123.gz01.bdysite.com/file/Life/分歧.mp3",
+            "id": "BaSO4_Life_05",
+            "name": "分歧"
+        },
+        {
+            "AlbumImageUrl": "http://cr0123.gz01.bdysite.com/file/Life/Life.png",
+            "album": "Life",
+            "artist": "BaSO4",
+            "duration": 0,
+            "fileUrl": "http://cr0123.gz01.bdysite.com/file/Life/潮湿.m4a",
+            "id": "BaSO4_Life_06",
+            "name": "潮湿"
+        },
+        {
+            "AlbumImageUrl": "http://cr0123.gz01.bdysite.com/file/Life/Life.png",
+            "album": "Life",
+            "artist": "BaSO4",
+            "duration": 0,
+            "fileUrl": "http://cr0123.gz01.bdysite.com/file/Life/逆风.m4a",
+            "id": "BaSO4_Life_07",
+            "name": "逆风"
+        }
+    ],
+    "size": 7,
+    "total_duration": 0
+}

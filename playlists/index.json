@@ -1,0 +1,6 @@
+{
+    "categories": [
+        {"id": "0", "title": "Test", "description": "A Test playlist.", "image": "https://clownote.github.io/images/rabbit_192.png"},
+        {"id": "1", "title": "Life", "description": "Nothing but a life.", "image": "http://cr0123.gz01.bdysite.com/file/Life/Life.png"}
+    ]
+}

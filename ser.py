@@ -5,6 +5,7 @@ from flask import app, Flask, request, render_template
 
 from rooms import *
 from user_util import *
+from playlist import *
 
 # 日志配置
 logging.basicConfig(level=logging.DEBUG,
@@ -233,7 +234,7 @@ def receive():
                     data = {"messages": messages}
             return json.dumps(data)
         except UidError:    # 发起用户不存在
-            logging.critical('<attend>: A NO EXISTING FROM-USER TRY TO receive. request.form = %s' % request.form)
+            logging.critical('<receive>: A NO EXISTING FROM-USER TRY TO receive. request.form = %s' % request.form)
             return json.dumps({ "error": "UidError" })
     logging.error('<receive>: Unexpected Error: request.method = %s, request.form = %s' % (request.method, request.form))
     return json.dumps({"error": "Unexpected"})
@@ -296,6 +297,72 @@ def logout():
             return json.dumps({ "error": "UidError" })
     logging.error('<logout>: Unexpected Error: request.method = %s, request.form = %s' % (request.method, request.form))
     return json.dumps({"error": "Unexpected"})
+
+
+@app.route("/playlist", methods=['GET', 'POST'])
+def playlist():
+    '''
+    已登陆且身处 Room 的用户获取播放列表
+    '''
+    if request.method == 'POST':
+        from_uid = request.form["from_uid"]
+        playlist_id = request.form["playlist"]
+        try:
+            from_user_data = uu.query_by_uid(from_uid)
+            if from_user_data['login'] != str(True):    # 发起用户未登录
+                data = {"error": "UserNotLogin"}
+                logging.error('<playlist> A NO LOGIN USER TRY TO playlist. request.form = %s' % request.form)
+            else:   # 发起用户登录正常
+                if from_user_data['group'] == str(None):  # 用户未加入 Room
+                    logging.warning('<playlist> a not in group user try to playlist. request.form = %s' % request.form)
+                    data = {"error": "TargetUserNotInGroup"}
+                else:   # 发起用户已登陆，且加入了 Room，可以获取
+                    content = get_playlist(playlist_id)
+                    if content != None:
+                        logging.info("<playlist> Successfully playlist. playlist_id = %s" % playlist_id)
+                        data = content
+                    else:
+                        logging.warning('<playlist> try to get a no exist playlist. request.form = %s' % request.form)
+                        data = {"error": "NoSuchPlaylist"}
+            return json.dumps(data)
+        except UidError:    # 发起用户不存在
+            logging.critical('<playlist>: A NO EXISTING FROM-USER TRY TO playlist. request.form = %s' % request.form)
+            return json.dumps({ "error": "UidError" })
+    logging.error('<playlist>: Unexpected Error: request.method = %s, request.form = %s' % (request.method, request.form))
+    return json.dumps({"error": "Unexpected"})
+
+
+@app.route("/category", methods=['GET', 'POST'])
+def category():
+    '''
+    已登陆且身处 Room 的用户获取 播放列表的目录(被叫做 categoryList 😂)
+    '''
+    if request.method == 'POST':
+        from_uid = request.form["from_uid"]
+        try:
+            from_user_data = uu.query_by_uid(from_uid)
+            if from_user_data['login'] != str(True):    # 发起用户未登录
+                data = {"error": "UserNotLogin"}
+                logging.error('<category> A NO LOGIN USER TRY TO category. request.form = %s' % request.form)
+            else:   # 发起用户登录正常
+                if from_user_data['group'] == str(None):  # 用户未加入 Room
+                    logging.warning('<category> a not in group user try to category. request.form = %s' % request.form)
+                    data = {"error": "TargetUserNotInGroup"}
+                else:   # 发起用户已登陆，且加入了 Room，可以获取
+                    content = get_index()
+                    if content != None:
+                        logging.info("<category> Successfully category. uid = %s" % from_uid)
+                        data = content
+                    else:
+                        logging.warning('<category> try to get a no exist category. request.form = %s' % request.form)
+                        data = {"error": "FailToGetIndex"}
+            return json.dumps(data)
+        except UidError:    # 发起用户不存在
+            logging.critical('<category>: A NO EXISTING FROM-USER TRY TO category. request.form = %s' % request.form)
+            return json.dumps({ "error": "UidError" })
+    logging.error('<category>: Unexpected Error: request.method = %s, request.form = %s' % (request.method, request.form))
+    return json.dumps({"error": "Unexpected"})
+
 
 if __name__ == '__main__':
     app.run()

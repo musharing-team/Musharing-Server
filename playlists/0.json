@@ -1,0 +1,17 @@
+{
+    "id": "0",
+    "name": "test",
+    "music_list": [
+        {
+            "AlbumImageUrl": "https://clownote.github.io/images/rabbit_192.png",
+            "album": "None",
+            "artist": "BaSO4",
+            "duration": 0,
+            "fileUrl": "http://cr0123.gz01.bdysite.com/file/sbt.mp3",
+            "id": "Test_00",
+            "name": "舒伯特"
+        }
+    ],
+    "size": 1,
+    "total_duration": 0
+}
