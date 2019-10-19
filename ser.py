@@ -5,7 +5,7 @@ from flask import app, Flask, request, render_template
 
 from rooms import *
 from user_util import *
-from playlist import *
+from playlist_util import *
 from authenticate_util import AuthenticateUtil
 from response_util import *
 from utility import *
@@ -27,7 +27,7 @@ app = Flask(__name__)
 
 rooms = Rooms()
 uu = UserUtil()
-
+pu = PlaylistUtil()
 au = AuthenticateUtil(uu, rooms)
 
 @app.route('/')
@@ -241,7 +241,7 @@ def playlist():
     已登陆且身处 Room 的用户获取播放列表
     '''
     def operate(from_uid, playlist_id):
-        content = get_playlist(playlist_id)
+        content = pu.get_playlist(playlist_id)
         if content != None:
             logging.info("<playlist> success. playlist_id = %s, from_uid = %s" % (playlist_id, from_uid))
             return response_success(content)
@@ -258,10 +258,10 @@ def category():
     已登陆且身处 Room 的用户获取 播放列表的目录(被叫做 categoryList 😂)
     '''
     def operate(from_uid):
-        content = get_index()
+        content = pu.get_index()
         if content != None:
             logging.info("<category> success. from_uid = %s" % from_uid)
-            return response_success(content)
+            return response_success({"categories": content})
         else:
             logging.warning('<category> fail_to_get_index. from_uid = %s' % from_uid)
             return response_error(get_simple_error_content(ResponseError.fail_to_get_index))

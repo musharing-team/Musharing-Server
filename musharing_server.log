@@ -967,3 +967,97 @@ user_util.RequestError: not enough param
 [INFO] 2019-10-19 22:38:26,190 _internal.py[line:88] 127.0.0.1 - - [19/Oct/2019 22:38:26] "POST /members HTTP/1.1" 200 -
 [INFO] 2019-10-19 22:39:09,272 ser.py[line:232] <logout>: success. from_uid = 4
 [INFO] 2019-10-19 22:39:09,272 _internal.py[line:88] 127.0.0.1 - - [19/Oct/2019 22:39:09] "POST /logout HTTP/1.1" 200 -
+[INFO] 2019-10-20 01:43:37,560 _internal.py[line:88]  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[INFO] 2019-10-20 01:43:37,561 _internal.py[line:88]  * Restarting with stat
+[WARNING] 2019-10-20 01:43:37,833 _internal.py[line:88]  * Debugger is active!
+[INFO] 2019-10-20 01:43:37,845 _internal.py[line:88]  * Debugger PIN: 751-962-697
+[INFO] 2019-10-20 01:43:53,821 ser.py[line:93] <login>: success. uid = 5
+[INFO] 2019-10-20 01:43:53,821 _internal.py[line:88] 127.0.0.1 - - [20/Oct/2019 01:43:53] "POST /login HTTP/1.1" 200 -
+[INFO] 2019-10-20 01:44:05,856 ser.py[line:93] <login>: success. uid = 4
+[INFO] 2019-10-20 01:44:05,856 _internal.py[line:88] 127.0.0.1 - - [20/Oct/2019 01:44:05] "POST /login HTTP/1.1" 200 -
+[WARNING] 2019-10-20 01:44:10,506 ser.py[line:125] <attend>: target_in_room. from_uid = 4, target_name = b
+[INFO] 2019-10-20 01:44:10,506 _internal.py[line:88] 127.0.0.1 - - [20/Oct/2019 01:44:10] "POST /attend HTTP/1.1" 200 -
+[INFO] 2019-10-20 01:44:37,496 _internal.py[line:88]  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[INFO] 2019-10-20 01:44:37,496 _internal.py[line:88]  * Restarting with stat
+[WARNING] 2019-10-20 01:44:37,704 _internal.py[line:88]  * Debugger is active!
+[INFO] 2019-10-20 01:44:37,709 _internal.py[line:88]  * Debugger PIN: 751-962-697
+[INFO] 2019-10-20 01:44:50,388 ser.py[line:93] <login>: success. uid = 4
+[INFO] 2019-10-20 01:44:50,389 _internal.py[line:88] 127.0.0.1 - - [20/Oct/2019 01:44:50] "POST /login HTTP/1.1" 200 -
+[INFO] 2019-10-20 01:44:53,557 ser.py[line:93] <login>: success. uid = 5
+[INFO] 2019-10-20 01:44:53,557 _internal.py[line:88] 127.0.0.1 - - [20/Oct/2019 01:44:53] "POST /login HTTP/1.1" 200 -
+[INFO] 2019-10-20 01:44:57,240 ser.py[line:148] <attend>: success. 4 :+ 5 -> 07f47ac1-1a0d-3476-aee3-98ea44c813a9
+[INFO] 2019-10-20 01:44:57,240 _internal.py[line:88] 127.0.0.1 - - [20/Oct/2019 01:44:57] "POST /attend HTTP/1.1" 200 -
+[INFO] 2019-10-20 01:45:02,300 ser.py[line:163] <members>: success. from_uid = 5
+[INFO] 2019-10-20 01:45:02,300 _internal.py[line:88] 127.0.0.1 - - [20/Oct/2019 01:45:02] "POST /members HTTP/1.1" 200 -
+[INFO] 2019-10-20 01:45:14,373 ser.py[line:263] <category> success. from_uid = 4
+[INFO] 2019-10-20 01:45:14,374 _internal.py[line:88] 127.0.0.1 - - [20/Oct/2019 01:45:14] "POST /category HTTP/1.1" 200 -
+[INFO] 2019-10-20 01:46:24,723 _internal.py[line:88]  * Detected change in '/Users/c/musharing_server/ser.py', reloading
+[INFO] 2019-10-20 01:46:24,933 _internal.py[line:88]  * Restarting with stat
+[WARNING] 2019-10-20 01:46:25,370 _internal.py[line:88]  * Debugger is active!
+[INFO] 2019-10-20 01:46:25,376 _internal.py[line:88]  * Debugger PIN: 751-962-697
+[INFO] 2019-10-20 01:46:28,400 _internal.py[line:88]  * Detected change in '/Users/c/musharing_server/ser.py', reloading
+[INFO] 2019-10-20 01:46:28,910 _internal.py[line:88]  * Restarting with stat
+[WARNING] 2019-10-20 01:46:29,148 _internal.py[line:88]  * Debugger is active!
+[INFO] 2019-10-20 01:46:29,154 _internal.py[line:88]  * Debugger PIN: 751-962-697
+[INFO] 2019-10-20 01:46:31,694 ser.py[line:263] <category> success. from_uid = 4
+[INFO] 2019-10-20 01:46:31,694 _internal.py[line:88] 127.0.0.1 - - [20/Oct/2019 01:46:31] "POST /category HTTP/1.1" 200 -
+[INFO] 2019-10-20 01:46:41,174 ser.py[line:263] <category> success. from_uid = 4
+[INFO] 2019-10-20 01:46:41,175 _internal.py[line:88] 127.0.0.1 - - [20/Oct/2019 01:46:41] "POST /category HTTP/1.1" 200 -
+[INFO] 2019-10-20 01:46:42,483 ser.py[line:263] <category> success. from_uid = 4
+[INFO] 2019-10-20 01:46:42,483 _internal.py[line:88] 127.0.0.1 - - [20/Oct/2019 01:46:42] "POST /category HTTP/1.1" 200 -
+[INFO] 2019-10-20 01:47:34,768 _internal.py[line:88]  * Detected change in '/Users/c/musharing_server/ser.py', reloading
+[INFO] 2019-10-20 01:47:35,047 _internal.py[line:88]  * Restarting with stat
+[WARNING] 2019-10-20 01:47:35,544 _internal.py[line:88]  * Debugger is active!
+[INFO] 2019-10-20 01:47:35,553 _internal.py[line:88]  * Debugger PIN: 751-962-697
+[INFO] 2019-10-20 01:48:18,938 _internal.py[line:88]  * Detected change in '/Users/c/musharing_server/ser.py', reloading
+[INFO] 2019-10-20 01:48:19,288 _internal.py[line:88]  * Restarting with stat
+[WARNING] 2019-10-20 01:48:19,526 _internal.py[line:88]  * Debugger is active!
+[INFO] 2019-10-20 01:48:19,539 _internal.py[line:88]  * Debugger PIN: 751-962-697
+[INFO] 2019-10-20 01:48:20,554 _internal.py[line:88]  * Detected change in '/Users/c/musharing_server/ser.py', reloading
+[INFO] 2019-10-20 01:48:21,075 _internal.py[line:88]  * Restarting with stat
+[WARNING] 2019-10-20 01:48:21,288 _internal.py[line:88]  * Debugger is active!
+[INFO] 2019-10-20 01:48:21,293 _internal.py[line:88]  * Debugger PIN: 751-962-697
+[INFO] 2019-10-20 01:48:22,303 _internal.py[line:88]  * Detected change in '/Users/c/musharing_server/ser.py', reloading
+[INFO] 2019-10-20 01:48:22,817 _internal.py[line:88]  * Restarting with stat
+[WARNING] 2019-10-20 01:48:23,035 _internal.py[line:88]  * Debugger is active!
+[INFO] 2019-10-20 01:48:23,039 _internal.py[line:88]  * Debugger PIN: 751-962-697
+[INFO] 2019-10-20 01:48:27,072 _internal.py[line:88]  * Detected change in '/Users/c/musharing_server/ser.py', reloading
+[INFO] 2019-10-20 01:48:27,580 _internal.py[line:88]  * Restarting with stat
+[WARNING] 2019-10-20 01:48:27,797 _internal.py[line:88]  * Debugger is active!
+[INFO] 2019-10-20 01:48:27,801 _internal.py[line:88]  * Debugger PIN: 751-962-697
+[INFO] 2019-10-20 01:48:29,821 _internal.py[line:88]  * Detected change in '/Users/c/musharing_server/ser.py', reloading
+[INFO] 2019-10-20 01:48:30,339 _internal.py[line:88]  * Restarting with stat
+[WARNING] 2019-10-20 01:48:30,549 _internal.py[line:88]  * Debugger is active!
+[INFO] 2019-10-20 01:48:30,554 _internal.py[line:88]  * Debugger PIN: 751-962-697
+[INFO] 2019-10-20 01:48:32,572 _internal.py[line:88]  * Detected change in '/Users/c/musharing_server/ser.py', reloading
+[INFO] 2019-10-20 01:48:33,088 _internal.py[line:88]  * Restarting with stat
+[WARNING] 2019-10-20 01:48:33,396 _internal.py[line:88]  * Debugger is active!
+[INFO] 2019-10-20 01:48:33,405 _internal.py[line:88]  * Debugger PIN: 751-962-697
+[INFO] 2019-10-20 01:48:53,594 _internal.py[line:88]  * Detected change in '/Users/c/musharing_server/ser.py', reloading
+[INFO] 2019-10-20 01:48:54,044 _internal.py[line:88]  * Restarting with stat
+[WARNING] 2019-10-20 01:48:54,415 _internal.py[line:88]  * Debugger is active!
+[INFO] 2019-10-20 01:48:54,421 _internal.py[line:88]  * Debugger PIN: 751-962-697
+[INFO] 2019-10-20 01:48:57,448 _internal.py[line:88]  * Detected change in '/Users/c/musharing_server/ser.py', reloading
+[INFO] 2019-10-20 01:48:57,957 _internal.py[line:88]  * Restarting with stat
+[WARNING] 2019-10-20 01:48:58,169 _internal.py[line:88]  * Debugger is active!
+[INFO] 2019-10-20 01:48:58,173 _internal.py[line:88]  * Debugger PIN: 751-962-697
+[INFO] 2019-10-20 01:49:12,322 _internal.py[line:88]  * Detected change in '/Users/c/musharing_server/ser.py', reloading
+[INFO] 2019-10-20 01:49:12,785 _internal.py[line:88]  * Restarting with stat
+[WARNING] 2019-10-20 01:49:13,024 _internal.py[line:88]  * Debugger is active!
+[INFO] 2019-10-20 01:49:13,030 _internal.py[line:88]  * Debugger PIN: 751-962-697
+[INFO] 2019-10-20 01:49:16,055 _internal.py[line:88]  * Detected change in '/Users/c/musharing_server/ser.py', reloading
+[INFO] 2019-10-20 01:49:16,571 _internal.py[line:88]  * Restarting with stat
+[WARNING] 2019-10-20 01:49:16,841 _internal.py[line:88]  * Debugger is active!
+[INFO] 2019-10-20 01:49:16,846 _internal.py[line:88]  * Debugger PIN: 751-962-697
+[INFO] 2019-10-20 01:49:23,026 ser.py[line:263] <category> success. from_uid = 4
+[INFO] 2019-10-20 01:49:23,026 _internal.py[line:88] 127.0.0.1 - - [20/Oct/2019 01:49:23] "POST /category HTTP/1.1" 200 -
+[WARNING] 2019-10-20 01:50:04,848 ser.py[line:249] <playlist> playlist_not_exist. playlist_id = 33, from_uid = 4
+[INFO] 2019-10-20 01:50:04,848 _internal.py[line:88] 127.0.0.1 - - [20/Oct/2019 01:50:04] "POST /playlist HTTP/1.1" 200 -
+[WARNING] 2019-10-20 01:50:11,267 ser.py[line:249] <playlist> playlist_not_exist. playlist_id = 0, from_uid = 4
+[INFO] 2019-10-20 01:50:11,267 _internal.py[line:88] 127.0.0.1 - - [20/Oct/2019 01:50:11] "POST /playlist HTTP/1.1" 200 -
+[WARNING] 2019-10-20 01:50:15,159 ser.py[line:249] <playlist> playlist_not_exist. playlist_id = 0, from_uid = 4
+[INFO] 2019-10-20 01:50:15,161 _internal.py[line:88] 127.0.0.1 - - [20/Oct/2019 01:50:15] "POST /playlist HTTP/1.1" 200 -
+[INFO] 2019-10-20 01:50:18,104 ser.py[line:246] <playlist> success. playlist_id = 1, from_uid = 4
+[INFO] 2019-10-20 01:50:18,104 _internal.py[line:88] 127.0.0.1 - - [20/Oct/2019 01:50:18] "POST /playlist HTTP/1.1" 200 -
+[INFO] 2019-10-20 01:50:30,738 ser.py[line:246] <playlist> success. playlist_id = 2, from_uid = 4
+[INFO] 2019-10-20 01:50:30,738 _internal.py[line:88] 127.0.0.1 - - [20/Oct/2019 01:50:30] "POST /playlist HTTP/1.1" 200 -

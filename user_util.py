@@ -96,8 +96,7 @@ class UserUtil (object):
         获取为新用户分配的 uid
         '''
         # 获取当前用户总数
-        # TODO：这个方法消耗太大，应该可以实现一个速度更快、代价更小、更优雅的解决方案
-        count = self.collection.find().count()
+        count = self.collection.count_documents({})
         return str(count + 1)
 
     def query_by_uid(self, uid):
