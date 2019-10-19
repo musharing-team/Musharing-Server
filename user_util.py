@@ -54,31 +54,29 @@ import pymongo
 import base64
 import hmac
 
+from utility import singleton
 from user import *
 
 
 # 错误类
-class UserNameError(ValueError):
-    pass
+class RequestError(ValueError):
+    def __init__(self, from_user=""):
+        self.from_user = from_user
+        super()
+
+class UserNameError(RequestError):
+    def __init__(self, from_user=''):
+        super().__init__(from_user=from_user)
 
 
-class PasswordError(ValueError):
-    pass
+class PasswordError(RequestError):
+    def __init__(self, from_user=''):
+        super().__init__(from_user=from_user)
 
 
-class UidError(ValueError):
-    pass
-
-
-# 单例装饰器
-def singleton(cls, *args, **kw):
-    instances = {}
-    def _singleton():
-        if cls not in instances:
-            instances[cls] = cls(*args, **kw)
-        return instances[cls]
-    return _singleton
-
+class UidError(RequestError):
+    def __init__(self, from_user=''):
+        super().__init__(from_user=from_user)
 
 # UserUtil 单例化
 @singleton
@@ -118,7 +116,7 @@ class UserUtil (object):
             }
             return data
         else:
-            raise UidError
+            raise UidError(uid)
 
     def query_by_name(self, name):
         '''
@@ -136,7 +134,7 @@ class UserUtil (object):
             }
             return data
         else:
-            raise UserNameError
+            raise UserNameError(name)
 
     def login(self, name, password):
         '''
@@ -150,12 +148,12 @@ class UserUtil (object):
         if result != None:  # 有这个用户
             # 比对密码
             if result["password"] == password:  # 密码正确，登录成功，返回对应的用户对象
-                user = User(result["uid"], self.decode_name(result["name"]), result["img"])
+                user = User(result["uid"], result["name"], result["img"])
                 return user
             else:   # 密码不正确，释放一个密码错误
-                raise PasswordError()
+                raise PasswordError(name)
         else:   # result == None，没有该用户，释放一个用户名错误
-            raise UserNameError()
+            raise UserNameError(name)
 
     def register(self, name, password, img_url):
         '''
@@ -179,7 +177,7 @@ class UserUtil (object):
             return self.login(name, password)   # 成功则返回尝试注册用户的 User 实例
 
         else:   # 用户已经存在，释放一个用户名错误
-            raise UserNameError()
+            raise UserNameError(name)
 
     def login_switch(self, uid, state):
         '''
@@ -205,80 +203,82 @@ class UserUtil (object):
         user_data['group'] = str(gid)
         self.collection.update_one(condition, {"$set": user_data})
 
-    def encode_name(self, name_str):
+    @staticmethod
+    def encode_name(name_str):
         name_encode =  base64.b64encode(name_str.encode("utf-8"))
         return name_encode.decode("utf-8")
 
-    def decode_name(self, name_base64):
+    @staticmethod
+    def decode_name(name_base64):
         name_decode = base64.b64decode(name_base64.encode("utf-8"))
         return name_decode.decode("utf-8")
 
-    def calc_password(self, name_base64, password):
+    @staticmethod
+    def calc_password(name_base64, password):
         uid_bytes = name_base64.encode("utf-8")
         password_bytes = password.encode("utf-8")
         h = hmac.new(uid_bytes, password_bytes, digestmod="MD5")
         encoded_password = h.hexdigest()
         return encoded_password
 
-def test():
-    uu = UserUtil()
+# def test():
+#     uu = UserUtil()
     
-    name = "foo"
-    passwd = "foobar"
+#     name = "foo"
+#     passwd = "foobar"
 
-    ne = uu.encode_name(name)
-    pe = uu.calc_password('1', passwd)
+#     ne = uu.encode_name(name)
+#     pe = uu.calc_password('1', passwd)
 
-    print(ne)
-    print(pe)
+#     print(ne)
+#     print(pe)
 
-    user1 = user2 = user3 = user4 = user5 = None
+#     user1 = user2 = user3 = user4 = user5 = None
 
-    print("* bad username login:")
-    try:
-        user1 = uu.login(ne, pe)
-    except UserNameError:
-        print("无此用户")
-    except PasswordError:
-        print("密码错误")
-    print(user1)
+#     print("* bad username login:")
+#     try:
+#         user1 = uu.login(ne, pe)
+#     except UserNameError:
+#         print("无此用户")
+#     except PasswordError:
+#         print("密码错误")
+#     print(user1)
 
-    print("* register:")
-    try:
-        user2 = uu.register(ne, pe, "/img")
-    except UserNameError:
-        print("已有此用户")
-    except PasswordError:
-        print("Unexpected: 密码错误!!!!!!!!")
-    print(user2)
+#     print("* register:")
+#     try:
+#         user2 = uu.register(ne, pe, "/img")
+#     except UserNameError:
+#         print("已有此用户")
+#     except PasswordError:
+#         print("Unexpected: 密码错误!!!!!!!!")
+#     print(user2)
 
-    print("* bad register:")
-    try:
-        user3 = uu.register(ne, "A Bad Password", "/img")
-    except UserNameError:
-        print("已有此用户")
-    except PasswordError:
-        print("Unexpected: 密码错误!!!!!!!!")
-    print(user3)
+#     print("* bad register:")
+#     try:
+#         user3 = uu.register(ne, "A Bad Password", "/img")
+#     except UserNameError:
+#         print("已有此用户")
+#     except PasswordError:
+#         print("Unexpected: 密码错误!!!!!!!!")
+#     print(user3)
 
-    print("* normal login:")
-    try:
-        user4 = uu.login(ne, pe)
-    except UserNameError:
-        print("无此用户")
-    except PasswordError:
-        print("密码错误")
-    print(user4)
+#     print("* normal login:")
+#     try:
+#         user4 = uu.login(ne, pe)
+#     except UserNameError:
+#         print("无此用户")
+#     except PasswordError:
+#         print("密码错误")
+#     print(user4)
 
-    print("* bad password login:")
-    try:
-        user5 = uu.login(ne, "A Bad Password")
-    except UserNameError:
-        print("无此用户")
-    except PasswordError:
-        print("密码错误")
-    print(user5)
+#     print("* bad password login:")
+#     try:
+#         user5 = uu.login(ne, "A Bad Password")
+#     except UserNameError:
+#         print("无此用户")
+#     except PasswordError:
+#         print("密码错误")
+#     print(user5)
 
-if __name__ == "__main__":
-    # test()
-    pass
+# if __name__ == "__main__":
+#     test()
