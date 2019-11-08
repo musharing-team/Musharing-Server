@@ -3,11 +3,13 @@ import logging
 
 from flask import app, Flask, request, render_template
 
+from notice import *
 from rooms import *
 from user_util import *
 from playlist_util import *
 from authenticate_util import AuthenticateUtil
 from response_util import *
+from notice_util import *
 from utility import *
 
 # 日志配置
@@ -27,6 +29,7 @@ app = Flask(__name__)
 
 rooms = Rooms()
 uu = UserUtil()
+nu = NoticeUtil()
 pu = PlaylistUtil()
 au = AuthenticateUtil(uu, rooms)
 
@@ -269,6 +272,40 @@ def category():
     return common_inroom_auth_response("category", request, operate, ("from_uid",))
 
 
+@app.route("/notice", methods=['GET', 'POST'])
+def notice():
+    """
+    用户 GET 收取通知，或管理员 POST 发送通知
+    """
+    try:
+        if request.method == "GET":     # 用户获取通知
+            from_uid = request.args.get("from_uid", None)
+            notice_list = nu.get(from_uid)
+
+            logging.info("<notice GET> success. from_uid = %s" % from_uid)
+            return response_success({"notices": notice_list})
+
+        elif request.method == "POST":    # 管理员发送通知
+            name = request.form["name"]
+            password = request.form["password"]
+
+            if au.admin.isAdmin(name, password):
+                notice = Notice().from_dict(dict(request.form))
+                nu.add(notice)
+
+                logging.info("<notice POST> success. name = %s" % name)
+                return response_success(get_simple_success_content("notice"))
+            else:
+                logging.warning("<notice POST> not_permitted. name = %s, password = %s" % (name, password))
+                return response_error(get_simple_error_content(ResponseError.not_permitted))
+                
+    except Exception as e:
+        logging.error('<{name}>: unexpected. request = {request}, request.args = {r_args}, request.form = {form}'.format(
+            name="notice", request=request, r_args=request.args, form=request.form))
+        return response_unexpected(e)
+
+
+
 def common_inroom_auth_response(name, request, operate, op_args):
     '''
     > 通用的需要通过验证用户存在、已登录、身处 Room 的操作。
@@ -317,7 +354,8 @@ def common_inroom_auth_response(name, request, operate, op_args):
         return operate(**args)
 
     except Exception as e:
-        logging.error('<{name}>: unexpected. request = {request}, request.form = {form}'.format(name=name, request=request, form=request.form))
+        logging.error('<{name}>: unexpected. request = {request}, request.form = {form}'.format(
+            name=name, request=request, form=request.form))
         return response_unexpected(e)
 
 
@@ -366,7 +404,8 @@ def common_login_auth_response(name, request, operate, op_args):
         return operate(**args)
 
     except Exception as e:
-        logging.error('<{name}>: unexpected. request = {request}, request.form = {form}'.format(name=name, request=request, form=request.form))
+        logging.error('<{name}>: unexpected. request = {request}, request.form = {form}'.format(
+            name=name, request=request, form=request.form))
         return response_unexpected(e)
 
 

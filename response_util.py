@@ -111,3 +111,5 @@ class ResponseError:
 
     wrong_name = "wrong_name"
     wrong_password = "wrong_password"
+
+    not_permitted = "not_permitted"

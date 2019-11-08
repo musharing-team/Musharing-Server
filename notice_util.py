@@ -16,9 +16,13 @@ class NoticeUtil (object):
 
     def add(self, notice: Notice):
         # self.collection.insert_one(notice.to_dict())
+        assert notice.is_empty() == False
         self.update(notice)
 
     def get(self, uid=None):
+        """
+        获取通知，传入 uid: str 来指定获取用于指定用户的通知，缺省 uid=None 获取所有通知
+        """
         notices = []
         for r in self.collection.find() or []:
             n = Notice().from_dict(r)
@@ -29,6 +33,8 @@ class NoticeUtil (object):
         return notices
 
     def update(self, notice: Notice):
+        assert notice.is_empty() == False
+
         # 存在则更新，不存在则新建
         self.collection.update_one(
             {'nid': notice.nid},
