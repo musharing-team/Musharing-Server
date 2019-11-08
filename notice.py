@@ -31,11 +31,17 @@ class Notice (object):
         }
 
     def from_dict(self, notice_dict):
-        self.nid = notice_dict.get("nid") or ""
+        """
+        从 dict 中解析一条 notice，内容覆盖当前 Notice 实例
+        """
+        import time
+        import random
+        import json
+        self.nid = notice_dict.get("nid") or (str(time.time()) + "/" + str(random.randint(100, 999)))   # 缺省值由当前时间戳与随机字符串混合得出
         self.title = notice_dict.get("title") or ""
         self.content = notice_dict.get("content") or ""
-        self.expired = float(notice_dict.get("expired")) or 0
-        self.audience = notice_dict.get("audience") or []
+        self.expired = float(notice_dict.get("expired") or time.time() + 60 * 60 * 6)   # 缺省为发送6小时后过期
+        self.audience = json.loads(str(notice_dict.get("audience")) or "[]")
         return self
 
     def dumps(self):
@@ -43,6 +49,9 @@ class Notice (object):
         return json.dumps(self.to_dict())
 
     def loads(self, notice_json):
+        """
+        从 json 中解析一条 notice，内容覆盖当前 Notice 实例
+        """
         import json
         notice_dict = json.loads(notice_json)
         self.from_dict(notice_dict)
@@ -54,7 +63,14 @@ class Notice (object):
             return True
         return False
 
+    def is_empty(self):
+        if self.title == self.content == "":
+            return True
+        return False
+
     def is_for_user(self, uid):
-        if len(self.audience) > 0 and uid not in self.audience:
+        # 把 uid 和 self.audience 中的值都换成 str 去比较。
+        audiences = map(str, self.audience)
+        if len(self.audience) > 0 and str(uid) not in audiences:
             return False
         return True
