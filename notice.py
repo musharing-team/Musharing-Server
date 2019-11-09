@@ -41,7 +41,7 @@ class Notice (object):
         self.title = notice_dict.get("title") or ""
         self.content = notice_dict.get("content") or ""
         self.expired = float(notice_dict.get("expired") or time.time() + 60 * 60 * 6)   # 缺省为发送6小时后过期
-        self.audience = json.loads(str(notice_dict.get("audience")) or "[]")
+        self.audience = json.loads(str(notice_dict.get("audience") or "[]"))
         return self
 
     def dumps(self):

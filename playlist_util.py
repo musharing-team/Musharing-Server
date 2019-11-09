@@ -49,3 +49,9 @@ class PlaylistUtil (object):
             return None
         drop_id(playlist)
         return playlist
+
+    def get_count_playlist(self):
+        """
+        获取当前播放列表总数
+        """
+        return self._collection.count_documents({})

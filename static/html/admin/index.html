@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Musharing Admin">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Musharing Admin</title>
+
+    <!-- 图标 -->
+    <link rel="stylesheet" href="/static/css/iconfont.css">
+    <!-- Vue.js -->
+    <!-- TODO 部署前改为使用生产环境 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- Bootstrap @3.3.7 -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <!-- axios v0.12.0 -->
+    <script src="/static/js/axios.min.js"></script>
+
+    <link rel="stylesheet" href="/static/css/style.default.css" id="theme-stylesheet">
+
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <!-- header -->
+    <header class="header" id="header">
+        <nav class="navbar navbar-expand-lg px-4 bg-white shadow">
+            <h1 class=" font-weight-bold text-uppercase ">Musharing Admin</h1>
+        </nav>
+    </header>
+
+    <div id="main">
+        <div class="row" id="content">
+            <!-- login -->
+            <div class="col-xs-12 col-sm-3 col-md-3" id="left-side">
+                <h2>管理员身份</h2>
+                <p>请用您的管理员身份登录Musharing Admin:</p>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">管理员用户名</label>
+                    <input type="text" v-model="name" class="form-control" id="name" placeholder="Administrator">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">管理员密码</label>
+                    <input type="password" v-model="password" class="form-control" id="password" placeholder="Password">
+                </div>
+
+                <div>
+                    <div class="text-center">
+                        <button @click="login" class="btn btn-default" type="submit">登录</button>
+                    </div>
+                </div>
+
+                <div v-if="loginInfoShow" class="alert alert-info alert-dismissible" role="alert">
+                    <button @click="loginInfoShow = false" type="button" class="close" data-dismiss="alert"
+                        aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>欢迎您 {{ name }}!</strong> <br />已记录您的身份，您的管理员权限将在您试图查看数据或提交操作时被验证。
+                </div>
+
+                <div v-if="loginWarningShow" class="alert alert-danger alert-dismissible" role="alert">
+                    <button @click="loginWarningShow = false" type="button" class="close" data-dismiss="alert"
+                        aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>警告!</strong> <br />请正确输入用户名、密码。
+                </div>
+
+            </div>
+
+            <!-- content -->
+            <div class="col-xs-12 col-sm-8 col-md-8" id="right-side">
+                <!-- nav -->
+                <nav>
+                    <ul class="nav nav-tabs">
+                        <content-nav-item v-for="(description, id) in contentNav" :id="id" :description="description"
+                            :active="id === currentActiveNav ? 'active': ''" :click="switchNav" :key="id">
+                        </content-nav-item>
+                        <!-- <li id="current" role="presentation" class="active"><a href="#">当前</a></li>
+                                <li id="notice" role="presentation"><a href="#">通知</a></li> -->
+
+                        <!-- <li role="presentation"><a href="#">...</a></li> -->
+                    </ul>
+                </nav>
+                <!-- main content -->
+                <div class="bg-white shadow" id="main-content">
+                    <!-- current -->
+                    <div v-if="currentActiveNav === 'current'">
+                        <div>
+                            <div class="text-right">
+                                <button @click="getStatus" class="btn btn-default" type="submit">获取当前状态</button>
+                            </div>
+                        </div>
+                        <div v-if="statusErrorShow" class="alert alert-warning alert-dismissible" role="alert">
+                            <button @click="statusErrorShow = false" type="button" class="close" data-dismiss="alert"
+                                aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <strong>状态获取失败!</strong> <br />{{ statusErrorText }}
+                        </div>
+                        <div>
+                            <div class="row status-pad">
+                                <!-- All User -->
+                                <div class="col-xs-2 col-sm-2 col-md-2 status-block shadow">
+                                    <div>
+                                        <span class="status-icon iconfont icon-users"></span>
+                                        <span class="status-title">Total Users</span>
+                                        <span class="status-num">{{ status_nums.user_num }}</span>
+                                    </div>
+                                </div>
+                                <!-- Login User -->
+                                <div class="col-xs-2 col-sm-2 col-md-2 status-block shadow">
+                                    <div>
+                                        <span class="status-icon iconfont icon-login_user"></span>
+                                        <span class="status-title">Login Users</span>
+                                        <span class="status-num">{{ status_nums.login_num }}</span>
+                                    </div>
+                                </div>
+                                <!-- Inroom User -->
+                                <div class="col-xs-2 col-sm-2 col-md-2 status-block shadow">
+                                    <div>
+                                        <span class="status-icon iconfont icon-Users"
+                                            style="font-size:30px !important; top: -5%;"></span>
+                                        <span class="status-title">InRoom Users</span>
+                                        <span class="status-num">{{ status_nums.inroom_num }}</span>
+                                    </div>
+                                </div>
+                                <!-- Rooms -->
+                                <div class="col-xs-2 col-sm-2 col-md-2 status-block shadow">
+                                    <div>
+                                        <span class="status-icon iconfont icon-iconroom"></span>
+                                        <span class="status-title">Rooms</span>
+                                        <span class="status-num">{{ status_nums.rooms_num }}</span>
+                                    </div>
+                                </div>
+                                <!-- Playlists -->
+                                <div class="col-xs-2 col-sm-2 col-md-2 status-block shadow">
+                                    <div>
+                                        <span class="status-icon iconfont icon-playlist"></span>
+                                        <span class="status-title">Playlists</span>
+                                        <span class="status-num">{{ status_nums.playlist_num }}</span>
+                                    </div>
+                                </div>
+                                <!-- Notices -->
+                                <div class="col-xs-2 col-sm-2 col-md-2 status-block shadow">
+                                    <div>
+                                        <span class="status-icon iconfont icon-notice"></span>
+                                        <span class="status-title">Notices</span>
+                                        <span class="status-num">{{ status_nums.notice_num }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- notice-post -->
+                    <div v-if="currentActiveNav === 'notice-post'">
+                        <div class="form-group">
+                            <label for="title">标题</label>
+                            <input v-model="notice.title" type="text" name="title" class="form-control" id="title"
+                                placeholder="必须输入通知标题！">
+                        </div>
+                        <div class="form-group">
+                            <label for="text">内容</label>
+                            <textarea v-model="notice.content" name="content" class="form-control" id="content"
+                                rows="10" placeholder="输入通知文本内容"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="text">过期时间</label>
+                            <input v-model="notice.expired" type="datetime-local" name="expired" class="form-control"
+                                id="expired" placeholder="过期时间"></input>
+                        </div>
+                        <div class="form-group">
+                            <label for="text">指定接收用户</label>
+                            <textarea v-model="notice.audience" name="audience" class="form-control" id="audience"
+                                placeholder='接收用户 uid 列表，json格式，例如 ["001", "003", "023"]'></textarea>
+                        </div>
+                        <div id="submit-notice">
+
+                            <div class="text-right">
+                                <input v-model="noticeChecked" type="checkbox">
+                                确认所有信息无误！
+                                <button @click="postNotice" class="btn btn-default" type="submit">发布</button>
+                            </div>
+
+                            <div v-if="noticeErrorShow" class="alert alert-danger alert-dismissible" role="alert">
+                                <button @click="noticeErrorShow = false" type="button" class="close"
+                                    data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong>发布失败!</strong> <br />{{ noticeErrorText }}
+                            </div>
+                            <div v-if="noticeSuccessShow" class="alert alert-success alert-dismissible" role="alert">
+                                <button @click="noticeSuccessShow = false" type="button" class="close"
+                                    data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong>发布成功!</strong> <br />通知已发布。
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-if="currentActiveNav === 'more'">
+                        <div style="margin: 50px">
+                            这里什么都没有🤪
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="navbar navbar-default navbar-fixed-bottom">
+        <div class="row">
+            <div class="col-xs-12 col-sm-3 col-md-3" id="copyright">
+                Copyright © 2019 Musharing Team. All rights reserved.
+            </div>
+            <!-- <div class="col-xs-12 col-sm-3 col-md-3" id="quicklink">
+                快速链接：
+                <ul>
+                    <li><a>github: Musharing-Android</a></li>
+                    <li><a>github: Musharing-Sever</a></li>
+                </ul>
+            </div> -->
+            <div class="col-xs-12 col-sm-3 col-md-3" id="totop" style="float: right">
+                <a href="#header">To the Top</a>
+            </div>
+        </div>
+    </footer>
+</body>
+
+
+
+<script type="text/javascript">
+
+    var contentNav = {
+        "current": "当前",
+        "notice-post": "发布通知",
+        "more": "更多"
+    }
+
+    const DEFAULT_NOTICE_ERROR_TEXT = '通知发布失败，请确保各项填写正确，并勾选“确认所有信息无误”后重试，若问题仍然存在，请联系权限更高的管理员。'
+    const DEFAULT_STATUS_ERROR_TEXT = '请正确登录后点击“获取当前状态”重试。'
+
+    Vue.component("content-nav-item", {
+        props: ['id', 'description', 'active', 'click'],
+        template: '<li :id="id" role="presentation" :class="active" class="nav-card" @click="click(id)"><a>{{ description }}</a></li>'
+    })
+
+    var notice = {
+        "title": "",
+        "content": "",
+        "expired": "",
+        "audience": ""
+    }
+
+    var status_nums = {
+        "user_num": "-",
+        "login_num": "-",
+        "inroom_num": "-",
+        "rooms_num": "-",
+        "playlist_num": "-",
+        "notice_num": "-"
+    }
+
+    var mainVm = new Vue({
+        el: "#main",
+        data: {
+            name: "",
+            password: "",
+            loginInfoShow: false,
+            loginWarningShow: false,
+
+            currentActiveNav: "current",
+            contentNav: contentNav,
+
+            status_nums: status_nums,
+            statusErrorShow: true,
+            statusErrorText: DEFAULT_STATUS_ERROR_TEXT,
+
+            notice: notice,
+            noticeChecked: false,
+            noticeErrorShow: false,
+            noticeSuccessShow: false,
+            noticeErrorText: DEFAULT_NOTICE_ERROR_TEXT
+        },
+        computed: {
+            legalNotice: function () {
+                return ((this.notice.title != "") || (this.notice.content != ""))
+            }
+        },
+        methods: {
+            switchNav: function (id) {
+                this.currentActiveNav = id
+            },
+            login: function () {
+                if (this.name != "" && this.password != "") {
+                    this.loginWarningShow = false
+                    this.loginInfoShow = true
+                } else {
+                    this.loginInfoShow = false
+                    this.loginWarningShow = true
+                }
+            },
+            getStatus: function () {
+                var vm = this
+
+                // 配置 axios 使用 form
+                axios.defaults.headers.post['Content-Type'] = 'Content-Type:application/x-www-form-urlencoded; charset=UTF-8'
+
+                var params = new URLSearchParams();
+                params.append('name', this.name);
+                params.append('password', this.password);
+
+                axios.post('/status', params).then(function (response) {
+                    if (response.data.response != undefined) {
+                        if (response.data.response.status != undefined) {  // 获取成功
+                            let sts = response.data.response.status
+                            for (var k in sts) {
+                                Vue.set(vm.status_nums, k, sts[k])
+                            }
+                            vm.statusErrorShow = false
+                            return
+                        }
+                    } else if (response.data.error != undefined) {
+                        switch (response.data.error.error) {
+                            case "not_permitted":
+                                vm.statusErrorText = "管理员权限认证未通过，请正确填写您的管理员用户名及密码"
+                                break
+                            default:
+                                vm.statusErrorText = DEFAULT_STATUS_ERROR_TEXT
+                        }
+                        vm.statusErrorShow = true
+                    }
+                });
+            },
+            postNotice: function () {
+                if (!this.noticeChecked || !this.legalNotice) {
+                    this.noticeSuccessShow = false
+                    this.noticeErrorText = "请确保完整填写各项信息，并勾选“确认所有信息无误”。"
+                    this.noticeErrorShow = true
+                    return
+                } else {
+                    this.noticeSuccessShow = false
+                    this.noticeErrorShow = false
+
+                    var vm = this
+
+                    // 配置 axios 使用 form
+                    axios.defaults.headers.post['Content-Type'] = 'Content-Type:application/x-www-form-urlencoded; charset=UTF-8'
+
+                    var params = new URLSearchParams();
+                    params.append('name', this.name);
+                    params.append('password', this.password);
+                    if (this.notice.title != "") {
+                        params.append("title", this.notice.title)
+                    }
+                    if (this.notice.content != "") {
+                        params.append("content", this.notice.content)
+                    }
+                    if (this.notice.expired != "") {
+                        params.append("expired", Date.parse(this.notice.expired) / 1000)    // Time in seconds since the Epoch. 与 python 的 time.time() 保持一致
+                    }
+                    if (this.notice.audience != "") {
+                        try {
+                            params.append("audience", JSON.stringify(JSON.parse(this.notice.audience)))
+                        } catch (e) {
+                            this.noticeSuccessShow = false
+                            this.noticeErrorText = '您填写的“指定接收用户”格式错误，请保证 json 格式的 uid 列表，例如 ["001", "003", "023"]'
+                            this.noticeErrorShow = true
+                            return
+                        }
+                    }
+
+                    axios.post('/notice', params).then(function (response) {
+                        if (response.data.response != undefined) {
+                            if (response.data.response.success != undefined) {  // 发布成功
+                                vm.noticeErrorShow = false
+                                vm.noticeErrorText = DEFAULT_NOTICE_ERROR_TEXT
+                                vm.noticeSuccessShow = true
+                                return
+                            }
+                        } else if (response.data.error != undefined) {
+                            vm.noticeSuccessShow = false
+                            switch (response.data.error.error) {
+                                case "not_permitted":
+                                    vm.noticeErrorText = "管理员权限认证未通过，请正确填写您的管理员用户名及密码"
+                                    break
+                                default:
+                                    vm.noticeErrorText = DEFAULT_NOTICE_ERROR_TEXT
+                            }
+                            vm.noticeErrorShow = true
+                        }
+                    });
+                }
+            }
+        }
+    })
+</script>

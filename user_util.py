@@ -195,12 +195,30 @@ class UserUtil (object):
         标示用户是否加入了 musharing_ser
         将数据库中用户(uid)的 group 字段修改为 state
 
-        gid 的值为 gid（int）or None
+        gid 的值为 gid (str) or None
         '''
         condition = {"uid": uid}
         user_data = self.collection.find_one(condition)
         user_data['group'] = str(gid)
         self.collection.update_one(condition, {"$set": user_data})
+
+    def get_count_all(self):
+        """
+        获取用户总数
+        """
+        return self.collection.count_documents({})
+
+    def get_count_login(self):
+        """
+        获取当前登录状态为 True 的人的总数
+        """
+        return self.collection.count_documents({"login": str(True)})
+
+    def get_count_inroom(self):
+        """
+        获取当前状态为在房间中的人的总数
+        """
+        return self.collection.count_documents({"group": {'$ne': str(None)}})
 
     @staticmethod
     def encode_name(name_str):

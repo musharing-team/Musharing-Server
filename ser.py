@@ -305,6 +305,37 @@ def notice():
         return response_unexpected(e)
 
 
+@app.route("/status", methods=['GET', 'POST'])
+def status():
+    """
+    管理员获取当前状态
+    """
+    try:
+        assert request.method == "POST", "method should be POST"
+
+        name = request.form["name"]
+        password = request.form["password"]
+
+        if au.admin.isAdmin(name, password):
+            current_status = getStatus()
+
+            logging.info("<status> success. name = %s" % name)
+            return response_success({"status": current_status})
+        else:
+            logging.warning("<status> not_permitted. name = %s, password = %s" % (name, password))
+            return response_error(get_simple_error_content(ResponseError.not_permitted))
+                
+    except Exception as e:
+        logging.error('<{name}>: unexpected. request = {request}, request.args = {r_args}, request.form = {form}'.format(
+            name="status", request=request, r_args=request.args, form=request.form))
+        return response_unexpected(e)
+
+
+@app.route("/admin", methods=['GET', 'POST'])
+def admin():
+    if request.method == "GET":
+        return app.send_static_file('html/admin/index.html')
+
 
 def common_inroom_auth_response(name, request, operate, op_args):
     '''
@@ -408,6 +439,24 @@ def common_login_auth_response(name, request, operate, op_args):
             name=name, request=request, form=request.form))
         return response_unexpected(e)
 
+
+def getStatus():
+    """
+    获取当前服务的状态
+    """
+    # rooms_num = rooms.get_count_rooms()
+    # login_num = uu.get_count_login()
+    # inroom_num = uu.get_count_inroom()
+    # playlist_num = pu.get_count_playlist()
+    # notice_num = nu.get_count_notice()
+    return {
+        "user_num": uu.get_count_all(),
+        "login_num": uu.get_count_login(),
+        "inroom_num": uu.get_count_inroom(),
+        "rooms_num": rooms.get_count_rooms(),
+        "playlist_num": pu.get_count_playlist(),
+        "notice_num": nu.get_count_notice()
+    }
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)

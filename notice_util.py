@@ -43,6 +43,11 @@ class NoticeUtil (object):
             )
 
     def drop_expired(self, notice=None):
+        """
+        调用 `nu.drop_expired()` 将清除数据库中所有过期的通知
+
+        调用 `nu.drop_expired(notice)` 将删除数据库中 nid = notice.nid 的一条通知，(这是用来支持 `nu.drop_expired()` 的工作的，也可以用来删除通知，但不推荐使用)
+        """
         if isinstance(notice, Notice):
             self.collection.delete_one({"nid": notice.nid})
         else:
@@ -53,3 +58,10 @@ class NoticeUtil (object):
 
     def clean_all(self):
         self.collection.delete_many({})
+
+    def get_count_notice(self):
+        """
+        清除过期通知后，获取当前所有未过期的通知的总数
+        """
+        self.drop_expired()
+        return self.collection.count_documents({})
