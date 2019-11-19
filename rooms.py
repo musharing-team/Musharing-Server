@@ -37,3 +37,9 @@ class Rooms (object):
         for i in self.rooms:
             if len(self.rooms[i].get_members()) <= 0:
                 self.rooms.pop(i)
+
+    def get_count_rooms(self):
+        """
+        获取当前房间总数
+        """
+        return len(self.rooms)

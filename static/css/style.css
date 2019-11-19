@@ -1,0 +1,88 @@
+header {
+    text-align: center
+}
+
+body { 
+    padding-bottom: 70px;
+    background-color: #F8F9FB !important;
+}
+
+footer {
+    background-image: url(/static/img/bkg.svg);
+    background-repeat: no-repeat;
+}
+
+#content {
+    margin: auto;
+    border-radius: 10px;
+    height: 100%;
+}
+
+#left-side {
+    padding: 2%;
+    margin-bottom: 15px;
+    background: #fff;
+    -webkit-box-shadow: 0 0.125rem 0.8rem rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0.125rem 0.8rem rgba(0, 0, 0, 0.1);
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 15px;
+}
+
+#main-content {
+    padding: 1%;
+    background: #FFF;
+    border: 1px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 15px;
+}
+
+.active>a {
+    background-color: #FFF !important;
+}
+
+button {
+    background-color: dodgerblue !important;
+}
+
+.status-pad {
+    margin: auto;
+    padding: 2%;
+}
+
+.status-block {
+    width: 134px;
+    height: 69px;
+    margin: 10px;
+    padding: 1%;
+    position:relative;
+    background-color: #FFF;
+    border: 1px gray;
+    border-radius: 20px;
+}
+
+.status-icon {
+    position: absolute;
+    size: 20px;
+    font-size: 20px;
+}
+
+.status-title {
+    color: darkgray;
+    font-size: 15px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: absolute;
+    top: 70%;
+    right: 10%;
+    transform: translateY(-50%);
+}
+
+.status-num {
+    font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+    font-size: 30px;
+    position: absolute;
+    top: 25%;
+    right: 10%;
+    transform: translateY(-50%);
+}
