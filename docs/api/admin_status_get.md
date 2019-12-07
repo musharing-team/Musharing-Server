@@ -4,17 +4,17 @@
 
 ### 请求URL:
 
-- `http://musharing.server/status`
+- `http://musharing.server/admin/status/get`
 ### 请求方式:
 
 - POST 
 
 ### 请求参数:
 
-| 参数名   | 必选 | 类型   | 说明         |
-| -------- | ---- | ------ | ------------ |
-| name     | 是   | string | 管理员用户名 |
-| password | 是   | string | 管理员密码   |
+| 参数名     | 必选 | 类型   | 说明         |
+| ---------- | ---- | ------ | ------------ |
+| admin_name | 是   | string | 管理员用户名 |
+| password   | 是   | string | 管理员密码   |
 
  ### 返回示例
 

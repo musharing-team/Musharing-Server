@@ -3,6 +3,8 @@ import logging
 
 from flask import app, Flask, request, render_template
 
+from clear import clear
+
 from notice import *
 from rooms import *
 from user_util import *
@@ -285,8 +287,8 @@ def notice():
             logging.info("<notice GET> success. from_uid = %s" % from_uid)
             return response_success({"notices": notice_list})
 
-        elif request.method == "POST":    # 管理员发送通知
-            name = request.form["name"]
+        elif request.method == "POST":    # 管理员发送通知，弃用自2019.12.06，不再维护，TODO：**⚠️注意在出现安全隐患时应直接删除这段代码**！
+            name = request.form["admin_name"]
             password = request.form["password"]
 
             if au.admin.isAdmin(name, password):
@@ -305,36 +307,75 @@ def notice():
         return response_unexpected(e)
 
 
-@app.route("/status", methods=['GET', 'POST'])
-def status():
-    """
-    管理员获取当前状态
-    """
-    try:
-        assert request.method == "POST", "method should be POST"
-
-        name = request.form["name"]
-        password = request.form["password"]
-
-        if au.admin.isAdmin(name, password):
-            current_status = getStatus()
-
-            logging.info("<status> success. name = %s" % name)
-            return response_success({"status": current_status})
-        else:
-            logging.warning("<status> not_permitted. name = %s, password = %s" % (name, password))
-            return response_error(get_simple_error_content(ResponseError.not_permitted))
-                
-    except Exception as e:
-        logging.error('<{name}>: unexpected. request = {request}, request.args = {r_args}, request.form = {form}'.format(
-            name="status", request=request, r_args=request.args, form=request.form))
-        return response_unexpected(e)
-
-
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
     if request.method == "GET":
         return app.send_static_file('html/admin/index.html')
+
+
+@app.route("/admin/status/get", methods=['GET', 'POST'])
+def admin_status_get():
+    """
+    管理员获取当前状态
+    """
+    def operate(admin_name):
+        current_status = getStatus()
+        logging.info("<admin/status/get> success. admin_name = %s" % admin_name)
+        return response_success({"status": current_status})
+
+    return common_admin_auth_response("admin/status/get", request, operate, ("admin_name", ))
+    # try:
+    #     assert request.method == "POST", "method should be POST"
+
+    #     name = request.form["name"]
+    #     password = request.form["password"]
+
+    #     if au.admin.isAdmin(name, password):
+    #         current_status = getStatus()
+
+    #         logging.info("<status> success. name = %s" % name)
+    #         return response_success({"status": current_status})
+    #     else:
+    #         logging.warning("<status> not_permitted. name = %s, password = %s" % (name, password))
+    #         return response_error(get_simple_error_content(ResponseError.not_permitted))
+                
+    # except Exception as e:
+    #     logging.error('<{name}>: unexpected. request = {request}, request.args = {r_args}, request.form = {form}'.format(
+    #         name="status", request=request, r_args=request.args, form=request.form))
+    #     return response_unexpected(e)
+
+
+@app.route("/admin/notice/add", methods=['GET', 'POST'])
+def admin_notice_add():
+    '''
+    管理员发送新通知
+    '''
+    def operate(request_form, admin_name):
+        notice = Notice().from_dict(dict(request.form))
+        nu.add(notice)
+        
+        logging.info("<amdin/notice/get> success. admin_name = %s" % admin_name)
+        return response_success(get_simple_success_content("notice"))
+
+    return common_admin_auth_response("admin/notice/get", request, operate, ("request_form", "admin_name"))
+
+
+@app.route("/admin/playlist/add", methods=['GET', 'POST'])
+def admin_playlist_add():
+    '''
+    管理员新建播放列表
+    '''
+    def operate(playlistJson, admin_name):
+        try:
+            playlist = json.loads(playlistJson)
+            pu.add(playlist["title"], playlist["description"], playlist["image"], playlist["music_list"])
+            logging.info("<admin/playlist/add> success. admin_name = %s" % admin_name)
+            return response_success(get_simple_success_content("playlist"))
+        except Exception as e:
+            logging.warning("<admin/playlist/add> unexpected. admin_name = %s, playlistJson = %s, e = %s" % (admin_name, playlistJson, e))
+            return response_unexpected()
+
+    return common_admin_auth_response("admin/playlist/add", request, operate, ("playlistJson" ,"admin_name"))
 
 
 def common_inroom_auth_response(name, request, operate, op_args):
@@ -440,6 +481,59 @@ def common_login_auth_response(name, request, operate, op_args):
         return response_unexpected(e)
 
 
+def common_admin_auth_response(name, request, operate, op_args):
+    '''
+    > 通用的需要通过管理员权限的操作。
+
+    参数：
+    - name: 操作名，用于日志输出；
+    - request: Flask 传来的 request；
+    - operate: 具体的操作函数，参数为需要从 request.form 中提取的值，返回值为成功后的response json;
+    - op_args: operate 函数的 参数名 str 组成的列表。
+
+    返回：response json
+
+    说明:
+
+    这个函数会从 request.form 中提取 验证管理员权限的 name 和 password 以及 op_args 中指定的所有值，若没有对应的值，会返回 unexpected；
+    然后该函数会对用户是否 exist、login、inRoom  进行检测，若有不满足，返回 from_not_exist，from_not_login 或 from_not_in_room；
+    通过了所有验证后，将调用 operate 函数，并用 argument unpacking 的方法把解析得到的 args 传给 operate。
+
+    '''
+    try:
+        assert request.method == 'POST', "method should be POST"
+        assert isinstance(op_args, (tuple, list)), "op_args should be tuple or list"
+
+        admin_name = None
+        password = None
+
+        args = {}
+        try:
+            admin_name = request.form["admin_name"]
+            password = request.form["password"]
+            for i in op_args:
+                if args.get(i, None) == None:
+                    if i == "request_form":
+                        args["request_form"] = request.form
+                    else:
+                        args[i] = request.form[i]
+        except KeyError:
+            raise RequestError("not enough param")
+
+        # 管理员验证
+        if au.admin.isAdmin(admin_name, password):
+            # 通过验证，可以操作
+            return operate(**args)
+        else:
+            logging.warning("<%s> not_permitted. admin_name = %s, password = %s" % (name, admin_name, password))
+            return response_error(get_simple_error_content(ResponseError.not_permitted))
+
+    except Exception as e:
+        logging.error('<{name}>: unexpected. request = {request}, request.form = {form}'.format(
+            name=name, request=request, form=request.form))
+        return response_unexpected(e)
+
+
 def getStatus():
     """
     获取当前服务的状态
@@ -459,4 +553,5 @@ def getStatus():
     }
 
 if __name__ == '__main__':
+    # clear()
     app.run(host="0.0.0.0", debug=True)

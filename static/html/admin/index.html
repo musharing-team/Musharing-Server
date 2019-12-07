@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 
+<!--
+    TODO: Vue.js 生产环境！
+    TODO: 发布通知选日期时间的选择在 Safari for Mac 中不显示！
+-->
+
 <head>
     <meta charset="utf-8">
     <meta name="description" content="Musharing Admin">
@@ -154,6 +159,7 @@
                         </div>
 
                     </div>
+
                     <!-- notice-post -->
                     <div v-if="currentActiveNav === 'notice-post'">
                         <div class="form-group">
@@ -201,6 +207,112 @@
                         </div>
                     </div>
 
+                    <!-- playlist-add -->
+                    <div v-if="currentActiveNav === 'playlist-add'">
+                        <div class="form-group">
+                            <label for="title">标题</label>
+                            <input v-model="playlist.title" type="text" name="title" class="form-control" id="title"
+                                placeholder="播放列表标题">
+                        </div>
+                        <div class="form-group">
+                            <label for="text">描述</label>
+                            <textarea v-model="playlist.description" name="description" class="form-control"
+                                id="description" rows="4" placeholder="播放列表描述"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="text">封面图片</label>
+                            <input v-model="playlist.image" type="url" name="image" class="form-control" id="image"
+                                placeholder="播放列表封面图片地址">
+                        </div>
+                        <div class="form-group">
+                            <label for="text">音乐列表</label>
+                            <button @click="addMusic" type="button" class="btn btn-default" style="margin-left: 20px">+</button>
+                            <button @click="popMusic" type="button" class="btn btn-default" style="margin-left: 20px">-</button>
+                            <ol v-for="(m, index) in playlist.music_list">
+                                <div>
+                                    <div>
+                                        <span class="music-list-item-index"> {{ index }} </span>
+                                    </div>
+                                    <div class="row" style="margin-left: 5px">
+                                        <!-- id -->
+                                        <div class="col-xs-5 col-sm-5 col-md-5">
+                                            <div class="form-group">
+                                                <label>曲目ID</label>
+                                                <input v-model="m.id" type="text" name="id" class="form-control"
+                                                    id="name" placeholder="曲目ID">
+                                            </div>
+                                        </div>
+                                        <!-- name -->
+                                        <div class="col-xs-5 col-sm-5 col-md-5">
+                                            <div class="form-group">
+                                                <label>曲目名</label>
+                                                <input v-model="m.name" type="text" name="name" class="form-control"
+                                                    id="name" placeholder="曲目名">
+                                            </div>
+                                        </div>
+                                        <!-- artist -->
+                                        <div class="col-xs-5 col-sm-5 col-md-5">
+                                            <div class="form-group">
+                                                <label>艺人</label>
+                                                <input v-model="m.artist" type="text" name="artist" class="form-control"
+                                                    id="artist" placeholder="艺人">
+                                            </div>
+                                        </div>
+                                        <!-- album -->
+                                        <div class="col-xs-5 col-sm-5 col-md-5">
+                                            <div class="form-group">
+                                                <label>专辑</label>
+                                                <input v-model="m.album" type="text" name="album" class="form-control"
+                                                    id="album" placeholder="专辑">
+                                            </div>
+                                        </div>
+                                        <!-- fileUrl -->
+                                        <div class="col-xs-5 col-sm-5 col-md-5">
+                                            <div class="form-group">
+                                                <label>音频文件Url</label>
+                                                <input v-model="m.fileUrl" type="url" name="fileUrl"
+                                                    class="form-control" id="fileUrl" placeholder="文件Url">
+                                            </div>
+                                        </div>
+                                        <!-- AlbumImageUrl -->
+                                        <div class="col-xs-5 col-sm-5 col-md-5">
+                                            <div class="form-group">
+                                                <label>封面图片Url</label>
+                                                <input v-model="m.AlbumImageUrl" type="url" name="AlbumImageUrl"
+                                                    class="form-control" id="AlbumImageUrl" placeholder="封面图片Url">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr style="margin-right: 18%">
+                                </div>
+                            </ol>
+                        </div>
+                        <div id="submit-notice">
+
+                            <div class="text-right">
+                                <input v-model="playlistChecked" type="checkbox">
+                                确认所有信息无误！
+                                <button @click="postPlaylist" class="btn btn-default" type="submit">发布</button>
+                            </div>
+
+                            <div v-if="playlistErrorShow" class="alert alert-danger alert-dismissible" role="alert">
+                                <button @click="playlistErrorShow = false" type="button" class="close"
+                                    data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong>发布失败!</strong> <br />{{ playlistErrorText }}
+                            </div>
+                            <div v-if="playlistSuccessShow" class="alert alert-success alert-dismissible" role="alert">
+                                <button @click="noticeSuccessShow = false" type="button" class="close"
+                                    data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong>发布成功!</strong> <br />新播放列表已发布。
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- more -->
                     <div v-if="currentActiveNav === 'more'">
                         <div style="margin: 50px">
                             这里什么都没有🤪
@@ -237,10 +349,12 @@
     var contentNav = {
         "current": "当前",
         "notice-post": "发布通知",
+        "playlist-add": "新建播放列表",
         "more": "更多"
     }
 
     const DEFAULT_NOTICE_ERROR_TEXT = '通知发布失败，请确保各项填写正确，并勾选“确认所有信息无误”后重试，若问题仍然存在，请联系权限更高的管理员。'
+    const DEFAULT_PLAYLIST_ERROR_TEXT = '播放列表发布失败，请确保各项填写正确，并勾选“确认所有信息无误”后重试，若问题仍然存在，请联系权限更高的管理员。'
     const DEFAULT_STATUS_ERROR_TEXT = '请正确登录后点击“获取当前状态”重试。'
 
     Vue.component("content-nav-item", {
@@ -248,11 +362,29 @@
         template: '<li :id="id" role="presentation" :class="active" class="nav-card" @click="click(id)"><a>{{ description }}</a></li>'
     })
 
+    function Music() {
+        this.AlbumImageUrl = ""
+        this.album = ""
+        this.artist = ""
+        this.duration = 0
+        this.fileUrl = ""
+        this.id = ""
+        this.name = ""
+    }
+
     var notice = {
         "title": "",
         "content": "",
-        "expired": "",
+        "expired": Date().toLocaleString(),
         "audience": ""
+    }
+
+    var playlist = {
+        "title": "",
+        "description": "",
+        "image": "",
+        "size": 0,
+        "music_list": []
     }
 
     var status_nums = {
@@ -283,16 +415,46 @@
             noticeChecked: false,
             noticeErrorShow: false,
             noticeSuccessShow: false,
-            noticeErrorText: DEFAULT_NOTICE_ERROR_TEXT
+            noticeErrorText: DEFAULT_NOTICE_ERROR_TEXT,
+
+            playlist: playlist,
+            playlistChecked: false,
+            playlistErrorShow: false,
+            playlistSuccessShow: false,
+            playlistErrorText: DEFAULT_PLAYLIST_ERROR_TEXT
         },
         computed: {
             legalNotice: function () {
                 return ((this.notice.title != "") || (this.notice.content != ""))
+            },
+            legalPlaylist: function() {
+                if ((this.playlist.title != "") &&
+                    (this.playlist.description != "") &&
+                    (this.playlist.image != "")) {
+                        for (i in this.playlist.music_list) {
+                            m = this.playlist.music_list[i]
+                            if ((m.name != "") &&
+                                (m.id != "") &&
+                                (m.fileUrl != "") &&
+                                (m.artist != "") &&
+                                (m.album != "") &&
+                                (m.AlbumImageUrl != "")) {
+                                    return true;
+                                }
+                        }
+                    }
+                return false;
             }
         },
         methods: {
             switchNav: function (id) {
                 this.currentActiveNav = id
+            },
+            addMusic: function () {
+                this.playlist.music_list.push(new Music)
+            },
+            popMusic: function() {
+                this.playlist.music_list.pop()
             },
             login: function () {
                 if (this.name != "" && this.password != "") {
@@ -310,10 +472,10 @@
                 axios.defaults.headers.post['Content-Type'] = 'Content-Type:application/x-www-form-urlencoded; charset=UTF-8'
 
                 var params = new URLSearchParams();
-                params.append('name', this.name);
+                params.append('admin_name', this.name);
                 params.append('password', this.password);
 
-                axios.post('/status', params).then(function (response) {
+                axios.post('/admin/status/get', params).then(function (response) {
                     if (response.data.response != undefined) {
                         if (response.data.response.status != undefined) {  // 获取成功
                             let sts = response.data.response.status
@@ -351,7 +513,7 @@
                     axios.defaults.headers.post['Content-Type'] = 'Content-Type:application/x-www-form-urlencoded; charset=UTF-8'
 
                     var params = new URLSearchParams();
-                    params.append('name', this.name);
+                    params.append('admin_name', this.name);
                     params.append('password', this.password);
                     if (this.notice.title != "") {
                         params.append("title", this.notice.title)
@@ -373,7 +535,7 @@
                         }
                     }
 
-                    axios.post('/notice', params).then(function (response) {
+                    axios.post('/admin/notice/add', params).then(function (response) {
                         if (response.data.response != undefined) {
                             if (response.data.response.success != undefined) {  // 发布成功
                                 vm.noticeErrorShow = false
@@ -391,6 +553,48 @@
                                     vm.noticeErrorText = DEFAULT_NOTICE_ERROR_TEXT
                             }
                             vm.noticeErrorShow = true
+                        }
+                    });
+                }
+            },
+            postPlaylist: function () {
+                if (!this.playlistChecked || !this.legalPlaylist) {
+                    this.playlistSuccessShow = false
+                    this.playlistErrorText = "请确保完整填写各项信息，并勾选“确认所有信息无误”。"
+                    this.playlistErrorShow = true
+                    return
+                } else {
+                    this.playlistSuccessShow = false
+                    this.playlistErrorShow = false
+
+                    var vm = this
+
+                    // 配置 axios 使用 form
+                    axios.defaults.headers.post['Content-Type'] = 'Content-Type:application/x-www-form-urlencoded; charset=UTF-8'
+
+                    var params = new URLSearchParams();
+                    params.append('admin_name', this.name);
+                    params.append('password', this.password);
+                    params.append('playlistJson', JSON.stringify(this.playlist));
+
+                    axios.post('/admin/playlist/add', params).then(function (response) {
+                        if (response.data.response != undefined) {
+                            if (response.data.response.success != undefined) {  // 发布成功
+                                vm.playlistErrorShow = false
+                                vm.playlistErrorText = DEFAULT_PLAYLIST_ERROR_TEXT
+                                vm.playlistSuccessShow = true
+                                return
+                            }
+                        } else if (response.data.error != undefined) {
+                            vm.playlistSuccessShow = false
+                            switch (response.data.error.error) {
+                                case "not_permitted":
+                                    vm.playlistErrorText = "管理员权限认证未通过，请正确填写您的管理员用户名及密码"
+                                    break
+                                default:
+                                    vm.playlistErrorText = DEFAULT_PLAYLIST_ERROR_TEXT
+                            }
+                            vm.playlistErrorShow = true
                         }
                     });
                 }
