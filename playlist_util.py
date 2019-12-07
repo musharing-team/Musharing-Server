@@ -1,6 +1,7 @@
 import os.path
 import json
 import pymongo
+import uuid
 from utility import drop_id
 
 # TODO: playlist 中添加 musicItem of music_list 的格式化检测工具
@@ -21,7 +22,8 @@ class PlaylistUtil (object):
 
     def _next_id(self):
         count = self._collection.count_documents({})
-        return str(count + 1)
+        # return str(count + 1)
+        return str(uuid.uuid4()).replace("-", str(count)[-1])
 
     def add(self, title: str, description: str, image: str, music_list):
         assert isinstance(music_list, (list, tuple))
