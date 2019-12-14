@@ -378,6 +378,23 @@ def admin_playlist_add():
     return common_admin_auth_response("admin/playlist/add", request, operate, ("playlistJson" ,"admin_name"))
 
 
+@app.route("/admin/clear", methods=['GET', 'POST'])
+def admin_clear():
+    '''
+    管理员重置当前用户、群组状态
+    '''
+    def operate(admin_name):
+        try:
+            clear()
+            logging.info("<admin/clear> success. admin_name = %s" % admin_name)
+            return response_success(get_simple_success_content("clear"))
+        except Exception as e:
+            logging.warning("<admin/clear> unexpected. admin_name = %s, e = %s" % (admin_name, e))
+            return response_unexpected()
+
+    return common_admin_auth_response("admin/clear", request, operate, ("admin_name", ))
+
+
 def common_inroom_auth_response(name, request, operate, op_args):
     '''
     > 通用的需要通过验证用户存在、已登录、身处 Room 的操作。

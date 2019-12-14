@@ -2,7 +2,6 @@
 
 <!--
     TODO: Vue.js 生产环境！
-    TODO: 发布通知选日期时间的选择在 Safari for Mac 中不显示！
 -->
 
 <head>
@@ -15,8 +14,13 @@
     <!-- 图标 -->
     <link rel="stylesheet" href="/static/css/iconfont.css">
     <!-- Vue.js -->
-    <!-- TODO 部署前改为使用生产环境 -->
+
+    <!-- development version, includes helpful console warnings -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <!-- production version, optimized for size and speed -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+
     <!-- Bootstrap @3.3.7 -->
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
     <!-- axios v0.12.0 -->
@@ -316,6 +320,9 @@
                     <div v-if="currentActiveNav === 'more'">
                         <div style="margin: 50px">
                             这里什么都没有🤪
+                            <div id="clear">
+                                <button @click="clearOnClick" class="btn btn-default">重置当前用户、群组状态</button>
+                            </div>
                         </div>
                     </div>
 
@@ -598,6 +605,38 @@
                         }
                     });
                 }
+            },
+            clearOnClick: function () {
+                if (confirm("⚠️ 确认要**重置服务**?")) {
+                    this.postClear()
+                } else {
+                    alert("Canceled!")
+                }
+            },
+            postClear: function () {
+                    // 配置 axios 使用 form
+                    axios.defaults.headers.post['Content-Type'] = 'Content-Type:application/x-www-form-urlencoded; charset=UTF-8'
+
+                    var params = new URLSearchParams();
+                    params.append('admin_name', this.name);
+                    params.append('password', this.password);
+
+                    axios.post('/admin/clear', params).then(function (response) {
+                        if (response.data.response != undefined) {
+                            if (response.data.response.success != undefined) {  // 请求成功
+                                alert("服务重置成功！")
+                                return
+                            }
+                        } else if (response.data.error != undefined) {
+                            switch (response.data.error.error) {
+                                case "not_permitted":
+                                    alert("管理员权限认证未通过，请正确填写您的管理员用户名及密码")
+                                    break
+                                default:
+                                    alert("服务重置失败，请稍后重试，若问题仍然存在，请联系权限更高的管理员。")
+                            }
+                        }
+                    });
             }
         }
     })
