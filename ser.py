@@ -3,7 +3,7 @@ import logging
 
 from flask import app, Flask, request, render_template
 
-from clear import clear
+from clean import clean
 
 from notice import *
 from rooms import *
@@ -378,21 +378,21 @@ def admin_playlist_add():
     return common_admin_auth_response("admin/playlist/add", request, operate, ("playlistJson" ,"admin_name"))
 
 
-@app.route("/admin/clear", methods=['GET', 'POST'])
-def admin_clear():
+@app.route("/admin/clean", methods=['GET', 'POST'])
+def admin_clean():
     '''
     管理员重置当前用户、群组状态
     '''
     def operate(admin_name):
         try:
-            clear()
-            logging.info("<admin/clear> success. admin_name = %s" % admin_name)
-            return response_success(get_simple_success_content("clear"))
+            clean()
+            logging.info("<admin/clean> success. admin_name = %s" % admin_name)
+            return response_success(get_simple_success_content("clean"))
         except Exception as e:
-            logging.warning("<admin/clear> unexpected. admin_name = %s, e = %s" % (admin_name, e))
+            logging.warning("<admin/clean> unexpected. admin_name = %s, e = %s" % (admin_name, e))
             return response_unexpected()
 
-    return common_admin_auth_response("admin/clear", request, operate, ("admin_name", ))
+    return common_admin_auth_response("admin/clean", request, operate, ("admin_name", ))
 
 
 def common_inroom_auth_response(name, request, operate, op_args):
@@ -570,5 +570,5 @@ def getStatus():
     }
 
 if __name__ == '__main__':
-    # clear()
+    # clean()
     app.run(host="0.0.0.0", debug=True)

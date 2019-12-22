@@ -320,8 +320,8 @@
                     <div v-if="currentActiveNav === 'more'">
                         <div style="margin: 50px">
                             这里什么都没有🤪
-                            <div id="clear">
-                                <button @click="clearOnClick" class="btn btn-default">重置当前用户、群组状态</button>
+                            <div id="clean">
+                                <button @click="cleanOnClick" class="btn btn-default">重置当前用户、群组状态</button>
                             </div>
                         </div>
                     </div>
@@ -606,14 +606,14 @@
                     });
                 }
             },
-            clearOnClick: function () {
+            cleanOnClick: function () {
                 if (confirm("⚠️ 确认要**重置服务**?")) {
-                    this.postClear()
+                    this.postclean()
                 } else {
                     alert("Canceled!")
                 }
             },
-            postClear: function () {
+            postclean: function () {
                     // 配置 axios 使用 form
                     axios.defaults.headers.post['Content-Type'] = 'Content-Type:application/x-www-form-urlencoded; charset=UTF-8'
 
@@ -621,7 +621,7 @@
                     params.append('admin_name', this.name);
                     params.append('password', this.password);
 
-                    axios.post('/admin/clear', params).then(function (response) {
+                    axios.post('/admin/clean', params).then(function (response) {
                         if (response.data.response != undefined) {
                             if (response.data.response.success != undefined) {  // 请求成功
                                 alert("服务重置成功！")

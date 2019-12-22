@@ -30,7 +30,7 @@ class Rooms (object):
         self.rooms[gid] = Room(gid)
         return gid
 
-    def clear(self):
+    def clean(self):
         '''
         清除空的房间，避免无效的内存占用
         '''

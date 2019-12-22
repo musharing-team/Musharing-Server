@@ -4,7 +4,7 @@
 
 ### 请求URL:
 
-- `http://musharing.server/clear`
+- `http://musharing.server/clean`
 
 ### 请求方式:
 
@@ -22,7 +22,7 @@
 ```json
   {
     "response": {
-      "success": "send"
+      "success": "clean"
     }
   }
 ```

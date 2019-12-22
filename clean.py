@@ -4,7 +4,7 @@
 用来清理用户数据库 login、group 信息，避免再次开启服务时的错误
 '''
 
-def clear():
+def clean():
     import pymongo
 
     # 连接数据库
@@ -19,4 +19,4 @@ def clear():
     print("login -> False:\tMatched: {m}, Modified: {c}".format(m=rl.matched_count, c=rl.modified_count))
 
 if __name__ == "__main__":
-    clear()
+    clean()
