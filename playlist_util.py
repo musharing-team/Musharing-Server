@@ -4,8 +4,6 @@ import pymongo
 import uuid
 from utility import drop_id
 
-# TODO: playlist 中添加 musicItem of music_list 的格式化检测工具
-
 dir_path = './playlists/'
 index_name = 'index.json'
 

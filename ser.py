@@ -14,6 +14,8 @@ from response_util import *
 from notice_util import *
 from utility import *
 
+# TODO: 字段比较的去首位空字符化，防止 java 发来的 uid 带 '\n' 影响判断！
+
 # 日志配置
 logging.basicConfig(level=logging.DEBUG,
                 format='[%(levelname)s] %(asctime)s %(filename)s[line:%(lineno)d] %(message)s',
@@ -34,6 +36,8 @@ uu = UserUtil()
 nu = NoticeUtil()
 pu = PlaylistUtil()
 au = AuthenticateUtil(uu, rooms)
+
+chatbot_feature_list = ["chatbot", 'Y2hhdGJvdA==', 'Y2hhdGJvdA==\n']      # 代表 chatbot 的特殊uid or name 字段，严禁用户使用！
 
 @app.route('/')
 def hello():
@@ -117,23 +121,34 @@ def attend():
     已登陆的用户加入 Room
     '''
     def operate(from_uid, target_name):
-        # 目标用户验证
-        if not au.byName.exist(target_name):
-            logging.warning('<attend>: target_not_exist. from_uid = %s, target_name = %s' %  (from_uid, target_name))
-            return response_error(get_simple_error_content(ResponseError.target_not_exist))
-
-        if not au.byName.logined(target_name):
-            logging.warning('<attend>: target_not_login. from_uid = %s, target_name = %s' %  (from_uid, target_name))
-            return response_error(get_simple_error_content(ResponseError.target_not_login))
-
-        if au.byName.inroom(target_name):
-            logging.warning('<attend>: target_in_room. from_uid = %s, target_name = %s' %  (from_uid, target_name))
-            return response_error(get_simple_error_content(ResponseError.target_in_room))
-        
-        # 验证通过，可以添加
         from_user_data = uu.query_by_uid(from_uid)
-        target_user_data = uu.query_by_name(target_name)
+        # 目标用户验证
+        if target_name in chatbot_feature_list:    # 不验证 chatbot 用户
+            target_user_data = {
+                "uid": chatbot_user.uid,
+                "name": uu.encode_name(chatbot_user.name),
+                "img": chatbot_user.img,
+                "login": True,
+                "group": None
+            }
+        else:   # 验证非 chatbot 的用户
+            if not au.byName.exist(target_name):
+                logging.warning('<attend>: target_not_exist. from_uid = %s, target_name = %s' %  (from_uid, target_name))
+                return response_error(get_simple_error_content(ResponseError.target_not_exist))
 
+            if not au.byName.logined(target_name):
+                logging.warning('<attend>: target_not_login. from_uid = %s, target_name = %s' %  (from_uid, target_name))
+                return response_error(get_simple_error_content(ResponseError.target_not_login))
+
+            if au.byName.inroom(target_name):
+                logging.warning('<attend>: target_in_room. from_uid = %s, target_name = %s' %  (from_uid, target_name))
+                return response_error(get_simple_error_content(ResponseError.target_in_room))
+
+            # 验证通过，取出用户数据
+            target_user_data = uu.query_by_name(target_name)
+        
+        
+        # 添加
         par = lambda data: (data['uid'], data['name'], data['img'])
 
         from_par = par(from_user_data)
@@ -141,13 +156,15 @@ def attend():
 
         if au.byUid.inroom(from_uid):   # 发起用户已经在 Room 中，把目标用户拉进去
             gid = from_user_data['group']
-            uu.group_change(target_user_data['uid'], gid)
+            if target_user_data['uid'] not in chatbot_feature_list:    # 只改变非chatbot用户的数据库状态
+                uu.group_change(target_user_data['uid'], gid)
             rooms.rooms[gid].add_user(*target_par)
         else:   # 发起用户未处于 Room 中，新建并加入
             gid = rooms.new_room()
             uu.group_change(from_user_data['uid'], gid)
             rooms.rooms[gid].add_user(*from_par)
-            uu.group_change(target_user_data['uid'], gid)
+            if target_user_data['uid'] not in chatbot_feature_list:    # 只改变非chatbot用户的数据库状态
+                uu.group_change(target_user_data['uid'], gid)
             rooms.rooms[gid].add_user(*target_par)
                         
         logging.info('<attend>: success. %s :+ %s -> %s' % (from_uid, target_user_data['uid'], gid))

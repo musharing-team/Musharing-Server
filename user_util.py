@@ -64,6 +64,7 @@ class RequestError(ValueError):
         self.from_user = from_user
         super()
 
+
 class UserNameError(RequestError):
     def __init__(self, from_user=''):
         super().__init__(from_user=from_user)
@@ -77,6 +78,11 @@ class PasswordError(RequestError):
 class UidError(RequestError):
     def __init__(self, from_user=''):
         super().__init__(from_user=from_user)
+
+
+# 特殊 User 对象
+chatbot_user = User("chatbot", "chatbot", "https://cdn.pixabay.com/photo/2017/12/03/14/31/kawaii-2995014__480.png")
+
 
 # UserUtil 单例化
 @singleton
