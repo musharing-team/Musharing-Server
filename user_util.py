@@ -93,9 +93,12 @@ class UserUtil (object):
         self.COLLECTION_NAME = "users"
 
         # 连接数据库
-        self.client = pymongo.MongoClient(host='localhost', port=27017)
-        self.db = self.client[self.DATABASE_NAME]
-        self.collection = self.db[self.COLLECTION_NAME]
+        try:
+            self.client = pymongo.MongoClient(host='localhost', port=27017)
+            self.db = self.client[self.DATABASE_NAME]
+            self.collection = self.db[self.COLLECTION_NAME]
+        except Exception as e:
+            print("[user_util] Database Conn Error: ", e)
 
     def next_uid(self):
         '''

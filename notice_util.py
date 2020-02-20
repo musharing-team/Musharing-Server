@@ -10,9 +10,12 @@ class NoticeUtil (object):
 
     def __init__(self):
         # 连接数据库
-        self.client = pymongo.MongoClient(host='localhost', port=27017)
-        self.db = self.client["musharing"]
-        self.collection = self.db["notices"]
+        try:
+            self.client = pymongo.MongoClient(host='localhost', port=27017)
+            self.db = self.client["musharing"]
+            self.collection = self.db["notices"]
+        except Exception as e:
+            print("[notice_util] Database Conn Error: ", e)
 
     def add(self, notice: Notice):
         # self.collection.insert_one(notice.to_dict())

@@ -8,15 +8,18 @@ def clean():
     import pymongo
 
     # 连接数据库
-    client = pymongo.MongoClient(host='localhost', port=27017)
-    db = client["musharing"]
-    collection = db["users"]
+    try:
+        client = pymongo.MongoClient(host='localhost', port=27017)
+        db = client["musharing"]
+        collection = db["users"]
 
-    rg = collection.update_many({"uid": {"$ne": "."}}, {"$set": {"group": "None"}})
-    print("group -> None:\tMatched: {m}, Modified: {c}".format(m=rg.matched_count, c=rg.modified_count))
+        rg = collection.update_many({"uid": {"$ne": "."}}, {"$set": {"group": "None"}})
+        print("group -> None:\tMatched: {m}, Modified: {c}".format(m=rg.matched_count, c=rg.modified_count))
 
-    rl = collection.update_many({"uid": {"$ne": "."}}, {"$set": {"login": "False"}})
-    print("login -> False:\tMatched: {m}, Modified: {c}".format(m=rl.matched_count, c=rl.modified_count))
+        rl = collection.update_many({"uid": {"$ne": "."}}, {"$set": {"login": "False"}})
+        print("login -> False:\tMatched: {m}, Modified: {c}".format(m=rl.matched_count, c=rl.modified_count))
+    except Exception as e:
+        print("[clean] Database Conn Error: False to clean: ", e)
 
 if __name__ == "__main__":
     clean()

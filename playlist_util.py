@@ -14,9 +14,12 @@ class PlaylistUtil (object):
         self._COLLECTION_NAME = "playlists"
 
         # 连接数据库
-        self._client = pymongo.MongoClient(host='localhost', port=27017)
-        self._db = self._client[self._DATABASE_NAME]
-        self._collection = self._db[self._COLLECTION_NAME]
+        try:
+            self._client = pymongo.MongoClient(host='localhost', port=27017)
+            self._db = self._client[self._DATABASE_NAME]
+            self._collection = self._db[self._COLLECTION_NAME]
+        except Exception as e:
+            print("[playlist_util] Database Conn Error: ", e)
 
     def _next_id(self):
         count = self._collection.count_documents({})
