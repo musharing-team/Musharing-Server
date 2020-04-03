@@ -234,7 +234,8 @@ def leave():
         from_user_data = uu.query_by_uid(from_uid)
         uu.group_change(from_uid, None)
         rooms.rooms[from_user_data['group']].remove_user(from_uid)
-
+        cnt = rooms.clean()
+        logging.info("<rooms.claen>: %s empty rooms poped" % cnt)
         logging.info("<leave> success. {gid} -= {uid}".format(gid=from_user_data['group'], uid=from_uid))
         return response_success(get_simple_success_content("leave"))
 
@@ -253,6 +254,8 @@ def logout():
         if au.byUid.inroom(from_uid):  # 用户加入了 Room，要先退出 Room，再退出登录
             uu.group_change(from_uid, None)
             rooms.rooms[from_user_data['group']].remove_user(from_uid)
+            cnt = rooms.clean()
+            logging.info("<rooms.claen>: %s empty rooms poped" % cnt)
             logging.info(
                 "<leave-when-logout> success. {gid} -= {uid}".format(gid=from_user_data['group'], uid=from_uid))
 
@@ -421,6 +424,8 @@ def admin_clean():
     def operate(admin_name):
         try:
             clean()
+            cnt = rooms.clean()
+            logging.info("<rooms.claen>: %s empty rooms poped" % cnt)
             logging.info("<admin/clean> success. admin_name = %s" % admin_name)
             return response_success(get_simple_success_content("clean"))
         except Exception as e:

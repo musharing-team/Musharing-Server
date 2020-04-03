@@ -34,9 +34,12 @@ class Rooms (object):
         '''
         清除空的房间，避免无效的内存占用
         '''
-        for i in self.rooms:
+        cnt = 0
+        for i in list(self.rooms):  # use list to force a copy of the keys to be made, https://stackoverflow.com/questions/11941817/how-to-avoid-runtimeerror-dictionary-changed-size-during-iteration-error
             if len(self.rooms[i].get_members()) <= 0:
                 self.rooms.pop(i)
+                cnt += 1
+        return cnt
 
     def get_count_rooms(self):
         """
