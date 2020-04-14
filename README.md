@@ -4,7 +4,7 @@
 
 > A New Way of Music Sharing in the Internet Era.
 
-**Musharing** is a *Android* app for immediate sharing music via Internet with your friends. It offers your the possibility of simulcasting a song in different phones no metter how far apart they are.  More attractive, with musharing, you can chat with your friends in the background of real synchronized music playing.
+**Musharing** is an *Android* app for immediately sharing music via the Internet with your friends. It offers you the possibility of simulcasting a song on different phones no matter how far apart they are.  More attractive, with musharing, you can chat with your friends in the background of real synchronized music playing.
 
 What behind this app is this simple but strong server. Being coded in only hundreds  of lines, it offers connections of different musharing users, with which they could attend a room, then chat freely as well as safely. This server NEVER records users' messages and everything about a account will be encrypted. Only the unexpected behaves will be logged (the account information will be encrypted, too) for debug.
 
